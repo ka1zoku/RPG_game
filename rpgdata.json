@@ -394,6 +394,12 @@
             "target_stat": "critchance", "bonus_stat": 0.20
         },
         {
+            "name": "Кольцо теневого убийцы",
+            "desc": "Кольцо лучшего за всю историю ассасина. Гарантирует крит.",
+            "weight": 0, "networth": 1000,
+            "target_stat": "critchance", "bonus_stat": 0.60
+        },
+        {
             "name": "Корона тьмы",
             "desc": "Артефакт древнего бога тьмы. Огромный запас маны.",
             "weight": 1, "networth": 900,

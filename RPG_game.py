@@ -49,7 +49,9 @@ class HpPotion(Potion):
         super().__init__(name, desc, weight, networth, amount)
     
     def drink_potion(self, character):
-        character.health += self.heal_amount
+        Potionheal = self.heal_amount
+        character.health = min(character.maxhealth, character.health + Potionheal)
+        print(f"{character.name} использовал {self.name} и восстановил {self.heal_amount} ХП! Текущее ХП: {character.health}")
 
 class ManaPotion(Potion):
     
@@ -57,6 +59,7 @@ class ManaPotion(Potion):
         super().__init__(name, desc, weight, networth, amount)
     
     def drink_potion(self, character):
+        print(f"{character.name} использовал {self.name} и восстановил {self.heal_amount} Маны!")
         character.mana += self.heal_amount
 
 #Аксессуары
@@ -79,6 +82,8 @@ class Accessories(Item):
         # Если после снятия кольца текущее здоровье стало больше нового максимума - срезаем
         if self.target_stat == 'maxhealth' and character.health > character.maxhealth:
             character.health = character.maxhealth
+        if self.target_stat == 'mana':
+            character.mana = 20
 #ИГРОВЫЕ ЭФФЕКТЫ
 class Effect:
     
@@ -174,9 +179,9 @@ class Character:
         if random.random() <= self.critchance:
             actual_damage *= 2
             # Слегка округлим урон, чтобы не писать 14.285714...
-            print(f'{self.name} атакует {target.name} {weapon.name} КРИТОМ нанося {actual_damage:.1f} урона')
+            print(f'{self.name} атакует {target.name} используя {weapon.name} КРИТОМ нанося {actual_damage:.1f} урона')
         else:
-            print(f'{self.name} атакует {target.name} {weapon.name} нанося {actual_damage:.1f} урона')
+            print(f'{self.name} атакует {target.name} используя {weapon.name} нанося {actual_damage:.1f} урона')
         
         # 3. Наносим урон (сохраняем результат!)
         target.health -= actual_damage
@@ -214,41 +219,6 @@ class Player(Character, ABC):
         self.gold = 0
         self.x = 4
         self.y = 4
-    
-    def use_potion(self):
-        potions = [item for item in self.inventory if isinstance(item, Potion)]
-        
-        if not potions:
-            print('У тебя нет зелий!')
-            return False
-
-        for i, item in enumerate(potions, 1):
-            print(f"{i}. {item.name}")
-        
-        while True:
-            try:
-                player_choice = int(input('Какое зелье ты хочешь выпить? (по номеру) (0 для отмены)'))
-                if player_choice == 0:
-                    return False
-                
-                idx = player_choice - 1
-                
-                if -1 <= idx < len(self.inventory):
-                    potion = potions[idx]
-                    potion.drink_potion(self)
-                    self.inventory.remove(potion)
-                    if isinstance(potion, HpPotion):
-                        print(f'{self.name} выпивает {potion.name} и восстанавливает себе {potion.heal_amount} ХП')
-                    else:
-                        print(f'{self.name} выпивает {potion.name} и восстанавливает себе {potion.heal_amount} Маны')
-                    return True
-                else:
-                    print('Неверный номер!')
-                    return False
-            
-            except ValueError:
-                print('Неверный ввод!')
-
         
     @abstractmethod
     def First_Spell(self, target):
@@ -271,7 +241,7 @@ class Warrior(Player):
         self.health = 120
         self.mana = 15 
         self.weapon = Weapon('Меч воина', 'Обычный стальной меч, ничего необычного', 5, 5 ,7)
-        self.itemarmor = PhysArmor('Кольчуга воина', 'Обычная кольчуга', 4, 5, 20)
+        self.itemarmor = PhysArmor('Кольчуга воина', 'Обычная кольчуга', 4, 5, 10)
         self.accessory = Accessories("Обычное кольцо", "-", 5, 10, "maxhealth", 5)
         self.armor = self.itemarmor.defence
         
@@ -352,7 +322,7 @@ class Mage(Player):
         self.health = 90
         self.mana = 30
         self.weapon = Weapon('Посох', 'Обычная магическая палочка', 5, 10, 6)
-        self.itemarmor = PhysArmor('Накидка мага', "Обычная накидка", 5, 10, 15)
+        self.itemarmor = PhysArmor('Накидка мага', "Обычная накидка", 5, 10, 4)
         self.accessory = Accessories("Обычное кольцо", "-", 5, 10, "maxhealth", 5)
         self.armor = self.itemarmor.defence
     
@@ -434,7 +404,7 @@ class Assassin(Player):
         self.mana = 20
         self.weapon = Weapon('Кинжал', 'Обычный кинжал', 4, 5, 7)
         self.critchance = 0.25
-        self.itemarmor = PhysArmor("Накидка", "Обычная накидка", 5, 10, 20)
+        self.itemarmor = PhysArmor("Накидка", "Обычная накидка", 5, 10, 5)
         self.accessory = Accessories("Обычное кольцо", "-", 5, 10, "maxhealth", 5)
         self.armor = self.itemarmor.defence
     
@@ -451,7 +421,7 @@ class Assassin(Player):
         if random.random() <= spell_critchance:
             actual_damage *= 2
             # Слегка округлим урон, чтобы не писать 14.285714...
-            print(f'{self.name} атакует {target.name} {weapon.name} КРИТОМ нанося {actual_damage:.1f}')
+            print(f'{self.name} атакует {target.name} используя{weapon.name} КРИТОМ нанося {actual_damage:.1f}')
         else:
             print(f'{self.name} атакует {target.name} {weapon.name} нанося {actual_damage:.1f}')
         
@@ -691,7 +661,7 @@ class Battle:
             turn = input("""
             1. Атаковать
             2. Использовать заклинание
-            3. Использовать предмет
+            3. Выпить зелье
             4. Проверить характеристики врага
             5. Проверить свои характеристики
             6. Попытаться сбежать (45%)             
@@ -706,7 +676,7 @@ class Battle:
                     return self.use_spell()
                 
                 case '3':
-                    return self.use_item()
+                    return self.use_potion()
                 
                 case '4':
                     self.check_stats(self.enemy)
@@ -721,9 +691,36 @@ class Battle:
                 
                 case _:
                     print('Неверный выбор!')
-                    
-    def use_item(self):
-        return self.player.use_potion()
+                
+    def use_potion(self):
+        potions = [item for item in self.player.inventory if isinstance(item, Potion)]
+        
+        if not potions:
+            print('У тебя нет зелий!')
+            return False
+
+        for i, item in enumerate(potions, 1):
+            print(f"{i}. {item.name}, {item.heal_amount}")
+        
+        while True:
+            try:
+                player_choice = int(input('Какое зелье ты хочешь выпить? (по номеру) (0 для отмены)'))
+                if player_choice == 0:
+                    return False
+                
+                idx = player_choice - 1
+                
+                if -1 <= idx < len(potions):
+                    potion = potions[idx]
+                    potion.drink_potion(self.player)
+                    self.player.inventory.remove(potion)
+                    return True
+                else:
+                    print('Неверный номер!')
+        
+            except ValueError:
+                print('Неверный ввод!')
+
         
     def use_spell(self):
         spell_choice = input('Какое по числу заклинание ты будешь использовать (1, 2 ,3) (0 если передумал)?: ')
@@ -757,6 +754,10 @@ class Battle:
         flee_chance = 0.45
         if random.random() <= flee_chance:
             self.is_flee = True
+            # 1. Возвращаем врагу полное здоровье
+            self.enemy.health = self.enemy.maxhealth
+            # 2. Очищаем все яды и дебаффы
+            self.enemy.active_effects.clear()
             return True
         else:
             print(f'Тебе не удалось сбежать! {self.enemy.name} делает удар!')
@@ -784,6 +785,10 @@ class Battle:
         character.health = character.maxhealth // 2
         character.x = 4
         character.y = 4
+        # 1. Возвращаем врагу полное здоровье
+        self.enemy.health = self.enemy.maxhealth
+        # 2. Очищаем все яды и дебаффы
+        self.enemy.active_effects.clear()
         
 class GameDatabase:
         
@@ -853,11 +858,12 @@ class GameDatabase:
                         items = self.get_all_items()
                     new_loc = Shop(location["name"], location["desc"], items, None)
                     worldmap[coords] = new_loc
-                    
                 case "Castle":
                     new_loc = Castle(location["name"], location["desc"], enemy)
                     worldmap[coords] = new_loc
-        
+                case "Town":
+                    new_loc = Town(location["name"], location["desc"], None)
+                    worldmap[coords] = new_loc
         return worldmap
     def create_enemy_by_name(self, enemy_type_string):
         # Словарь сопоставляет строку из JSON с созданием реального объекта
@@ -942,6 +948,11 @@ class Cave(Location):
 class Castle(Location):
     
     def __init__(self, name, desc, enemy):
+        super().__init__(name, desc, enemy)
+
+class Town(Location):
+    
+    def __init__(self, name, desc, enemy=None):
         super().__init__(name, desc, enemy)
 
 class Shop(Location):
@@ -1125,6 +1136,11 @@ class Game:
                     print(loc.desc)
                     if input("1 = Да, для Нет просто Enter") == "1":
                         loc.main_menu()    
+                
+                elif isinstance(loc, Town):
+                    print(" Ты отдыхаешь у костра. Здоровье и мана восстановлены!")
+                    self.character.health = self.character.maxhealth
+                    self.character.mana = 20 
                         
             else:
                 goblin = Goblin("Гоблин-разведчик", "Мерзкий и зеленый")
@@ -1157,10 +1173,9 @@ class Game:
                     loc.enemy = None
             
             elif loc.has_item():
-                if loc.enemy == None:
-                    break
                 print(f"Ты нашёл {loc.items.name}")
                 self.character.inventory.append(loc.items)
+                loc.items = None
             
             else:
                 print("Тут ничего не оказалось")
@@ -1175,7 +1190,7 @@ class Game:
         Оружие: {self.character.weapon.name} | {self.character.weapon.desc} | 
             Урон : {self.character.weapon.damage} | Стоимость: {self.character.weapon.networth}
         Броня: {self.character.itemarmor.name} | {self.character.itemarmor.desc} |
-            Стоимость: {self.character.itemarmor.networth}
+            Стоимость: {self.character.itemarmor.networth} | Защита: {self.character.itemarmor.defence}
         Аксессуар: {self.character.accessory.name} | {self.character.accessory.desc} |
             Бонус: {self.character.accessory.target_stat} | Кол-во: {self.character.accessory.bonus_stat}
         Макс. ХП: {self.character.maxhealth}
@@ -1250,7 +1265,7 @@ class Game:
     
     def equip_item(self):
         while True:
-            usdata = input("Что ты хочешь одеть? (0 для отмены)1. Оружие, 2. Броня, 3. Аксессуар: ")
+            usdata = input("Что ты хочешь одеть? (0 для отмены) 1. Оружие, 2. Броня, 3. Аксессуар: ")
             if usdata == '0':
                 return
             elif '0' < usdata < '4':

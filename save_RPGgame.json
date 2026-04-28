@@ -1,0 +1,155 @@
+{
+    "name": "1",
+    "desc": "1",
+    "class": "Assassin",
+    "hp": 90,
+    "weapon": {
+        "name": "Экскалибур",
+        "desc": "Легендарный меч короля. Светится золотым светом.",
+        "weight": 4,
+        "networth": 1200,
+        "type": "Weapon",
+        "damage": 55
+    },
+    "itemarmor": {
+        "name": "Святые латы",
+        "desc": "Освящённые латы — благословлены самими богами.",
+        "weight": 12,
+        "networth": 1000,
+        "type": "PhysArmor",
+        "defence": 60
+    },
+    "accessory": {
+        "name": "Кольцо теневого убийцы",
+        "desc": "Кольцо лучшего за всю историю ассасина. Гарантирует крит.",
+        "weight": 0,
+        "networth": 1000,
+        "type": "Accessories",
+        "target_stat": "critchance",
+        "bonus_stat": 0.6
+    },
+    "maxhp": 90,
+    "mana": 20,
+    "armor": 60,
+    "critchance": 0.85,
+    "gold": 692,
+    "x": 7,
+    "y": 6,
+    "save_date": "29.04.2026 00:54",
+    "inventory": [
+        {
+            "name": "Глоток лечебной настойки",
+            "desc": "Мутная жидкость с запахом трав. Совсем немного восстанавливает.",
+            "weight": 1,
+            "networth": 8,
+            "type": "HpPotion",
+            "amount": 15
+        },
+        {
+            "name": "Доспех варвара",
+            "desc": "Грубая но прочная броня северных варваров.",
+            "weight": 10,
+            "networth": 180,
+            "type": "PhysArmor",
+            "defence": 28
+        },
+        {
+            "name": "Гнилая дубина",
+            "desc": "Кусок гнилого дерева. Пахнет болотом.",
+            "weight": 3,
+            "networth": 5,
+            "type": "Weapon",
+            "damage": 3
+        },
+        {
+            "name": "Корона тьмы",
+            "desc": "Артефакт древнего бога тьмы. Огромный запас маны.",
+            "weight": 1,
+            "networth": 900,
+            "type": "Accessories",
+            "target_stat": "mana",
+            "bonus_stat": 80
+        },
+        {
+            "name": "Эликсир мудреца",
+            "desc": "Светится синим светом. Мощное восстановление маны.",
+            "weight": 1,
+            "networth": 200,
+            "type": "ManaPotion",
+            "amount": 80
+        },
+        {
+            "name": "Большое зелье здоровья",
+            "desc": "Тёмно-красный эликсир опытного алхимика.",
+            "weight": 1,
+            "networth": 80,
+            "type": "HpPotion",
+            "amount": 100
+        },
+        {
+            "name": "Большое зелье здоровья",
+            "desc": "Тёмно-красный эликсир опытного алхимика.",
+            "weight": 1,
+            "networth": 80,
+            "type": "HpPotion",
+            "amount": 100
+        },
+        {
+            "name": "Большое зелье здоровья",
+            "desc": "Тёмно-красный эликсир опытного алхимика.",
+            "weight": 1,
+            "networth": 80,
+            "type": "HpPotion",
+            "amount": 100
+        },
+        {
+            "name": "Кривой ятаган",
+            "desc": "Разбойничий клинок. Изогнутый и острый как бритва.",
+            "weight": 3,
+            "networth": 65,
+            "type": "Weapon",
+            "damage": 14
+        },
+        {
+            "name": "Накидка",
+            "desc": "Обычная накидка",
+            "weight": 5,
+            "networth": 10,
+            "type": "PhysArmor",
+            "defence": 20
+        },
+        {
+            "name": "Боевой топор",
+            "desc": "Широкий топор для рубки и щитов и врагов.",
+            "weight": 7,
+            "networth": 90,
+            "type": "Weapon",
+            "damage": 17
+        },
+        {
+            "name": "Кольцо берсерка",
+            "desc": "Красное кольцо пропитанное яростью. Повышает крит шанс.",
+            "weight": 0,
+            "networth": 120,
+            "type": "Accessories",
+            "target_stat": "critchance",
+            "bonus_stat": 0.1
+        },
+        {
+            "name": "Драконье копьё",
+            "desc": "Выковано из кости дракона. Пробивает любую броню.",
+            "weight": 6,
+            "networth": 500,
+            "type": "Weapon",
+            "damage": 40
+        },
+        {
+            "name": "Нагрудник стражника",
+            "desc": "Стандартный доспех городской стражи.",
+            "weight": 9,
+            "networth": 95,
+            "type": "PhysArmor",
+            "defence": 20
+        }
+    ]
+}
